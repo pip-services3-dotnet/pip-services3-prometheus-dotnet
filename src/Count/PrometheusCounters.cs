@@ -50,7 +50,7 @@ namespace PipServices.Prometheus.Count
                 _instance = contextInfo.ContextId;
         }
 
-        public bool IsOpened()
+        public bool IsOpen()
         {
             return _opened;
         }
