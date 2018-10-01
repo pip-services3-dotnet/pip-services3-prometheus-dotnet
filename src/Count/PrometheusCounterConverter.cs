@@ -7,8 +7,19 @@ using PipServices.Components.Count;
 
 namespace PipServices.Prometheus.Count
 {
+    /// <summary>
+    /// Helper class that converts performance counter values into 
+    /// a response from Prometheus metrics service.
+    /// </summary>
     public static class PrometheusCounterConverter
     {
+        /// <summary>
+        /// Converts the given counters to a string that is returned by Prometheus metrics service.
+        /// </summary>
+        /// <param name="counters">a list of counters to convert.</param>
+        /// <param name="source">a source (context) name.</param>
+        /// <param name="instance">a unique instance name (usually a host name).</param>
+        /// <returns></returns>
         public static string ToString(IEnumerable<Counter> counters, string source, string instance)
         {
             if (counters == null) return string.Empty;

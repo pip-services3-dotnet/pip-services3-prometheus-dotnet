@@ -13,7 +13,52 @@ using PipServices.Rpc.Connect;
 
 namespace PipServices.Prometheus.Count
 {
-    public class PrometheusCounters: CachedCounters, IReferenceable, IOpenable
+    /// <summary>
+    /// Performance counters that send their metrics to Prometheus service.
+    /// 
+    /// The component is normally used in passive mode conjunction with PrometheusMetricsService.
+    /// Alternatively when connection parameters are set it can push metrics to Prometheus PushGateway.
+    /// 
+    /// ### Configuration parameters ###
+    /// 
+    /// connection(s):           
+    /// discovery_key:         (optional) a key to retrieve the connection from IDiscovery
+    /// protocol:              connection protocol: http or https
+    /// host:                  host name or IP address
+    /// port:                  port number
+    /// uri:                   resource URI or connection string with all parameters in it
+    /// options:
+    /// retries:               number of retries(default: 3)
+    /// connect_timeout:       connection timeout in milliseconds(default: 10 sec)
+    /// timeout:               invocation timeout in milliseconds(default: 10 sec)
+    /// 
+    /// ### References ###
+    /// 
+    /// - *:logger:*:*:1.0         (optional) ILogger components to pass log messages
+    /// - *:counters:*:*:1.0         (optional) ICounters components to pass collected measurements
+    /// - *:discovery:*:*:1.0        (optional) IDiscovery services to resolve connection
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// var counters = new PrometheusCounters();
+    /// counters.Configure(ConfigParams.FromTuples(
+    /// "connection.protocol", "http",
+    /// "connection.host", "localhost",
+    /// "connection.port", 8080 ));
+    /// 
+    /// counters.Open("123");
+    /// 
+    /// counters.Increment("mycomponent.mymethod.calls");
+    /// var timing = counters.BeginTiming("mycomponent.mymethod.exec_time");
+    /// try {
+    /// ...
+    /// } finally {
+    /// timing.endTiming();
+    /// }
+    /// counters.dump();
+    /// </code>
+    /// </example>
+    public class PrometheusCounters : CachedCounters, IReferenceable, IOpenable
     {
         private CompositeLogger _logger = new CompositeLogger();
         private HttpConnectionResolver _connectionResolver = new HttpConnectionResolver();
@@ -24,9 +69,16 @@ namespace PipServices.Prometheus.Count
         private HttpClient _client;
         private Uri _requestUri;
 
+        /// <summary>
+        /// Creates a new instance of the performance counters.
+        /// </summary>
         public PrometheusCounters()
         { }
 
+        /// <summary>
+        /// Creates a new instance of the performance counters.
+        /// </summary>
+        /// <param name="config">configuration parameters to be set.</param>
         public override void Configure(ConfigParams config)
         {
             base.Configure(config);
@@ -37,6 +89,10 @@ namespace PipServices.Prometheus.Count
             _pushEnabled = config.GetAsBooleanWithDefault("push_enabled", true);
         }
 
+        /// <summary>
+        /// Sets references to dependent components.
+        /// </summary>
+        /// <param name="references">references to locate the component dependencies.</param>
         public virtual void SetReferences(IReferences references)
         {
             _logger.SetReferences(references);
@@ -50,11 +106,19 @@ namespace PipServices.Prometheus.Count
                 _instance = contextInfo.ContextId;
         }
 
+        /// <summary>
+        /// Checks if the component is opened.
+        /// </summary>
+        /// <returns>true if the component has been opened and false otherwise.</returns>
         public bool IsOpen()
         {
             return _opened;
         }
 
+        /// <summary>
+        /// Opens the component.
+        /// </summary>
+        /// <param name="correlationId">(optional) transaction id to trace execution through call chain.</param>
         public async Task OpenAsync(string correlationId)
         {
             if (_opened) return;
@@ -80,6 +144,10 @@ namespace PipServices.Prometheus.Count
             }
         }
 
+        /// <summary>
+        /// Closes component and frees used resources.
+        /// </summary>
+        /// <param name="correlationId">(optional) transaction id to trace execution through call chain.</param>
         public async Task CloseAsync(string correlationId)
         {
             _opened = false;
@@ -89,8 +157,12 @@ namespace PipServices.Prometheus.Count
             await Task.Delay(0);
         }
 
-		protected override void Save(IEnumerable<Counter> counters)
-		{
+        /// <summary>
+        /// Saves the current counters measurements.
+        /// </summary>
+        /// <param name="counters">current counters measurements to be saves.</param>
+        protected override void Save(IEnumerable<Counter> counters)
+        {
             if (_client == null || !_pushEnabled)
             {
                 return;
@@ -111,6 +183,6 @@ namespace PipServices.Prometheus.Count
             {
                 _logger.Error("prometheus-counters", ex, "Failed to push metrics to prometheus");
             }
-		}
-	}
+        }
+    }
 }
