@@ -155,12 +155,22 @@ Uri&#160;</td><td class="memItemRight" valign="bottom"><b>_requestUri</b></td></
 <p>The component is normally used in passive mode conjunction with PrometheusMetricsService. Alternatively when connection parameters are set it can push metrics to <a class="el" href="namespace_pip_services_1_1_prometheus.html">Prometheus</a> PushGateway.</p>
 <h3>Configuration parameters</h3>
 <p>connection(s): <br />
-discovery_key: (optional) a key to retrieve the connection from IDiscovery protocol: connection protocol: http or https host: host name or IP address port: port number uri: resource URI or connection string with all parameters in it options: retries: number of retries(default: 3) connect_timeout: connection timeout in milliseconds(default: 10 sec) timeout: invocation timeout in milliseconds(default: 10 sec)</p>
+- discovery_key: (optional) a key to retrieve the connection from <a href="https://rawgit.com/pip-services-dotnet/pip-services-components-dotnet/master/doc/api/interface_pip_services_1_1_components_1_1_connect_1_1_i_discovery.html">IDiscovery</a></p><ul>
+<li>protocol: connection protocol: http or https</li>
+<li>host: host name or IP address</li>
+<li>port: port number</li>
+<li>uri: resource URI or connection string with all parameters in it</li>
+</ul>
+<p>options:</p><ul>
+<li>retries: number of retries(default: 3)</li>
+<li>connect_timeout: connection timeout in milliseconds(default: 10 sec)</li>
+<li>timeout: invocation timeout in milliseconds(default: 10 sec)</li>
+</ul>
 <h3>References</h3>
 <ul>
-<li>*:logger:*:*:1.0 (optional) ILogger components to pass log messages</li>
-<li>*:counters:*:*:1.0 (optional) ICounters components to pass collected measurements</li>
-<li>*:discovery:*:*:1.0 (optional) IDiscovery services to resolve connection </li>
+<li>*:logger:*:*:1.0 (optional) <a href="https://rawgit.com/pip-services-dotnet/pip-services-components-dotnet/master/doc/api/interface_pip_services_1_1_components_1_1_log_1_1_i_logger.html">ILogger</a> components to pass log messages</li>
+<li>*:counters:*:*:1.0 (optional) <a href="https://rawgit.com/pip-services-dotnet/pip-services-components-dotnet/master/doc/api/interface_pip_services_1_1_components_1_1_count_1_1_i_counters.html">ICounters</a> components to pass collected measurements</li>
+<li>*:discovery:*:*:1.0 (optional) <a href="https://rawgit.com/pip-services-dotnet/pip-services-components-dotnet/master/doc/api/interface_pip_services_1_1_components_1_1_connect_1_1_i_discovery.html">IDiscovery</a> services to resolve connection </li>
 </ul>
 <div class="fragment"><div class="line">var counters = <span class="keyword">new</span> <a class="code" href="class_pip_services_1_1_prometheus_1_1_count_1_1_prometheus_counters.html#a54eb823864013e6b03f21333377382a3">PrometheusCounters</a>();</div><div class="line">counters.Configure(ConfigParams.FromTuples(</div><div class="line"><span class="stringliteral">&quot;connection.protocol&quot;</span>, <span class="stringliteral">&quot;http&quot;</span>,</div><div class="line"><span class="stringliteral">&quot;connection.host&quot;</span>, <span class="stringliteral">&quot;localhost&quot;</span>,</div><div class="line"><span class="stringliteral">&quot;connection.port&quot;</span>, 8080 ));</div><div class="line"></div><div class="line">counters.Open(<span class="stringliteral">&quot;123&quot;</span>);</div><div class="line"></div><div class="line">counters.Increment(<span class="stringliteral">&quot;mycomponent.mymethod.calls&quot;</span>);</div><div class="line">var timing = counters.BeginTiming(<span class="stringliteral">&quot;mycomponent.mymethod.exec_time&quot;</span>);</div><div class="line"><span class="keywordflow">try</span> {</div><div class="line">...</div><div class="line">} <span class="keywordflow">finally</span> {</div><div class="line">timing.endTiming();</div><div class="line">}</div><div class="line">counters.dump();</div></div><!-- fragment --> </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a54eb823864013e6b03f21333377382a3"></a>

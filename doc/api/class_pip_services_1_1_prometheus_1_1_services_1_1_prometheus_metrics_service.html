@@ -129,15 +129,24 @@ string&#160;</td><td class="memItemRight" valign="bottom"><b>_instance</b></td><
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Service that exposes "/metrics" route for <a class="el" href="namespace_pip_services_1_1_prometheus.html">Prometheus</a> to scap performance metrics. </p>
 <h3>Configuration parameters</h3>
-<p>dependencies: endpoint: override for HTTP Endpoint dependency prometheus-counters: override for PrometheusCounters dependency connection(s): <br />
-discovery_key: (optional) a key to retrieve the connection from IDiscovery protocol: connection protocol: http or https host: host name or IP address port: port number uri: resource URI or connection string with all parameters in it</p>
+<p>dependencies:</p><ul>
+<li>endpoint: override for HTTP Endpoint dependency</li>
+<li>prometheus-counters: override for PrometheusCounters dependency</li>
+</ul>
+<p>connection(s): <br />
+- discovery_key: (optional) a key to retrieve the connection from IDiscovery</p><ul>
+<li>protocol: connection protocol: http or https</li>
+<li>host: host name or IP address</li>
+<li>port: port number</li>
+<li>uri: resource URI or connection string with all parameters in it</li>
+</ul>
 <h3>References</h3>
 <ul>
-<li>*:logger:*:*:1.0 (optional) ILogger components to pass log messages</li>
-<li>*:counters:*:*:1.0 (optional) ICounters components to pass collected measurements</li>
-<li>*:discovery:*:*:1.0 (optional) IDiscovery services to resolve connection</li>
-<li>*:endpoint:http:*:1.0 (optional) HttpEndpoint reference to expose REST operation</li>
-<li>*:counters:prometheus:*:1.0 PrometheusCounters reference to retrieve collected metrics </li>
+<li>*:logger:*:*:1.0 (optional) <a href="https://rawgit.com/pip-services-dotnet/pip-services-components-dotnet/master/doc/api/interface_pip_services_1_1_components_1_1_log_1_1_i_logger.html">ILogger</a> components to pass log messages</li>
+<li>*:counters:*:*:1.0 (optional) <a href="https://rawgit.com/pip-services-dotnet/pip-services-components-dotnet/master/doc/api/interface_pip_services_1_1_components_1_1_count_1_1_i_counters.html">ICounters</a> components to pass collected measurements</li>
+<li>*:discovery:*:*:1.0 (optional) <a href="https://rawgit.com/pip-services-dotnet/pip-services-components-dotnet/master/doc/api/interface_pip_services_1_1_components_1_1_connect_1_1_i_discovery.html">IDiscovery</a> services to resolve connection</li>
+<li>*:endpoint:http:*:1.0 (optional) <a href="https://rawgit.com/pip-services-dotnet/pip-services-rpc-dotnet/master/doc/api/class_pip_services_1_1_rpc_1_1_services_1_1_http_endpoint.html">HttpEndpoint</a> reference to expose REST operation</li>
+<li>*:counters:prometheus:*:1.0 <a href="https://rawgit.com/pip-services-dotnet/pip-services-prometheus-dotnet/master/doc/api/class_pip_services_1_1_prometheus_1_1_count_1_1_prometheus_counters.html">PrometheusCounters</a> reference to retrieve collected metrics </li>
 </ul>
 <div class="fragment"><div class="line">var service = <span class="keyword">new</span> <a class="code" href="class_pip_services_1_1_prometheus_1_1_services_1_1_prometheus_metrics_service.html#a660546d51506a273555790fd4d95f8a5">PrometheusMetricsService</a>();</div><div class="line">service.Configure(ConfigParams.FromTuples(</div><div class="line"><span class="stringliteral">&quot;connection.protocol&quot;</span>, <span class="stringliteral">&quot;http&quot;</span>,</div><div class="line"><span class="stringliteral">&quot;connection.host&quot;</span>, <span class="stringliteral">&quot;localhost&quot;</span>,</div><div class="line"><span class="stringliteral">&quot;connection.port&quot;</span>, 8080 ));</div><div class="line"></div><div class="line">service.Open(<span class="stringliteral">&quot;123&quot;</span>);</div><div class="line">Console.Out.WriteLine(<span class="stringliteral">&quot;The Prometheus metrics service is accessible at http://+:8080/metrics&quot;</span>);</div></div><!-- fragment --> </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a660546d51506a273555790fd4d95f8a5"></a>
