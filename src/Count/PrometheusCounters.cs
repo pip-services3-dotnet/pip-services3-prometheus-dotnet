@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using PipServices.Commons.Config;
-using PipServices.Commons.Refer;
-using PipServices.Commons.Run;
-using PipServices.Components.Count;
-using PipServices.Components.Info;
-using PipServices.Components.Log;
-using PipServices.Rpc.Connect;
+using PipServices3.Commons.Config;
+using PipServices3.Commons.Refer;
+using PipServices3.Commons.Run;
+using PipServices3.Components.Count;
+using PipServices3.Components.Info;
+using PipServices3.Components.Log;
+using PipServices3.Rpc.Connect;
 
-namespace PipServices.Prometheus.Count
+namespace PipServices3.Prometheus.Count
 {
     /// <summary>
     /// Performance counters that send their metrics to Prometheus service.
@@ -22,7 +22,7 @@ namespace PipServices.Prometheus.Count
     /// ### Configuration parameters ###
     /// 
     /// connection(s):
-    /// - discovery_key:         (optional) a key to retrieve the connection from <a href="https://rawgit.com/pip-services-dotnet/pip-services-components-dotnet/master/doc/api/interface_pip_services_1_1_components_1_1_connect_1_1_i_discovery.html">IDiscovery</a>
+    /// - discovery_key:         (optional) a key to retrieve the connection from <a href="https://rawgit.com/pip-services3-dotnet/pip-services3-components-dotnet/master/doc/api/interface_pip_services_1_1_components_1_1_connect_1_1_i_discovery.html">IDiscovery</a>
     /// - protocol:              connection protocol: http or https
     /// - host:                  host name or IP address
     /// - port:                  port number
@@ -35,9 +35,9 @@ namespace PipServices.Prometheus.Count
     /// 
     /// ### References ###
     /// 
-    /// - *:logger:*:*:1.0         (optional) <a href="https://rawgit.com/pip-services-dotnet/pip-services-components-dotnet/master/doc/api/interface_pip_services_1_1_components_1_1_log_1_1_i_logger.html">ILogger</a> components to pass log messages
-    /// - *:counters:*:*:1.0         (optional) <a href="https://rawgit.com/pip-services-dotnet/pip-services-components-dotnet/master/doc/api/interface_pip_services_1_1_components_1_1_count_1_1_i_counters.html">ICounters</a> components to pass collected measurements
-    /// - *:discovery:*:*:1.0        (optional) <a href="https://rawgit.com/pip-services-dotnet/pip-services-components-dotnet/master/doc/api/interface_pip_services_1_1_components_1_1_connect_1_1_i_discovery.html">IDiscovery</a> services to resolve connection
+    /// - *:logger:*:*:1.0         (optional) <a href="https://rawgit.com/pip-services3-dotnet/pip-services3-components-dotnet/master/doc/api/interface_pip_services_1_1_components_1_1_log_1_1_i_logger.html">ILogger</a> components to pass log messages
+    /// - *:counters:*:*:1.0         (optional) <a href="https://rawgit.com/pip-services3-dotnet/pip-services3-components-dotnet/master/doc/api/interface_pip_services_1_1_components_1_1_count_1_1_i_counters.html">ICounters</a> components to pass collected measurements
+    /// - *:discovery:*:*:1.0        (optional) <a href="https://rawgit.com/pip-services3-dotnet/pip-services3-components-dotnet/master/doc/api/interface_pip_services_1_1_components_1_1_connect_1_1_i_discovery.html">IDiscovery</a> services to resolve connection
     /// </summary>
     /// <example>
     /// <code>
@@ -100,7 +100,7 @@ namespace PipServices.Prometheus.Count
             _connectionResolver.SetReferences(references);
 
             var contextInfo = references.GetOneOptional<ContextInfo>(
-                new Descriptor("pip-services", "context-info", "default", "*", "1.0"));
+                new Descriptor("pip-services3", "context-info", "default", "*", "1.0"));
             if (contextInfo != null && string.IsNullOrEmpty(_source))
                 _source = contextInfo.Name;
             if (contextInfo != null && string.IsNullOrEmpty(_instance))

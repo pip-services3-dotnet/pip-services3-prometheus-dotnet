@@ -5,9 +5,9 @@
 
     <IsPackable>false</IsPackable>
 
-    <AssemblyName>PipServices.Prometheus.Test</AssemblyName>
+    <AssemblyName>PipServices3.Prometheus.Test</AssemblyName>
 
-    <RootNamespace>PipServices.Prometheus</RootNamespace>
+    <RootNamespace>PipServices3.Prometheus</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">

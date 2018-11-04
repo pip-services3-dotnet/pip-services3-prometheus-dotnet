@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using PipServices.Components.Count;
+using PipServices3.Components.Count;
 using Xunit;
 
-namespace PipServices.Prometheus.Count
+namespace PipServices3.Prometheus.Count
 {
     public sealed class PrometheusCounterConverterTest
     {

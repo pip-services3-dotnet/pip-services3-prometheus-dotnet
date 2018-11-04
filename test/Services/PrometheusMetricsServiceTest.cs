@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
-using PipServices.Commons.Config;
-using PipServices.Commons.Refer;
-using PipServices.Components.Info;
-using PipServices.Prometheus.Count;
+using PipServices3.Commons.Config;
+using PipServices3.Commons.Refer;
+using PipServices3.Components.Info;
+using PipServices3.Prometheus.Count;
 using Xunit;
 
-namespace PipServices.Prometheus.Services
+namespace PipServices3.Prometheus.Services
 {
     public class PrometheusMetricsServiceTest : IDisposable
     {
@@ -30,9 +30,9 @@ namespace PipServices.Prometheus.Services
             _counters = new PrometheusCounters();
 
             var references = References.FromTuples(
-                new Descriptor("pip-services", "context-info", "default", "default", "1.0"), contextInfo,
-                new Descriptor("pip-services", "counters", "prometheus", "default", "1.0"), _counters,
-                new Descriptor("pip-services", "metrics-service", "prometheus", "default", "1.0"), _service
+                new Descriptor("pip-services3", "context-info", "default", "default", "1.0"), contextInfo,
+                new Descriptor("pip-services3", "counters", "prometheus", "default", "1.0"), _counters,
+                new Descriptor("pip-services3", "metrics-service", "prometheus", "default", "1.0"), _service
             );
             _service.SetReferences(references);
 

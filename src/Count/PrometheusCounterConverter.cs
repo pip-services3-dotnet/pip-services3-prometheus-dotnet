@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using PipServices.Commons.Convert;
-using PipServices.Components.Count;
+using PipServices3.Commons.Convert;
+using PipServices3.Components.Count;
 
-namespace PipServices.Prometheus.Count
+namespace PipServices3.Prometheus.Count
 {
     /// <summary>
     /// Helper class that converts performance counter values into 
