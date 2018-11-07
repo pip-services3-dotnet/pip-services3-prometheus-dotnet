@@ -1,6 +1,6 @@
 # <img src="https://github.com/pip-services/pip-services/raw/master/design/Logo.png" alt="Pip.Services Logo" style="max-width:30%"> <br/> Prometheus components for .NET
 
-This component library is a part of [Pip.Services](https://github.com/pip-services3/pip-services3) project.
+This component library is a part of [Pip.Services](https://github.com/pip-services/pip-services) project.
 It Prometheus components: PrometheusCounters and PrometheusMetricsService
 
 Quick Links:
