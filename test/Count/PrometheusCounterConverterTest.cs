@@ -7,6 +7,96 @@ namespace PipServices3.Prometheus.Count
 {
     public sealed class PrometheusCounterConverterTest
     {
+        [Theory]
+        [InlineData("MyService1.MyCommand1.exec_count", "exec_count")]
+        [InlineData("MyService1.MyCommand1.exec_time", "exec_time")]
+        [InlineData("MyService1.MyCommand1.exec_errors", "exec_errors")]
+        public void KnownCounter_Exec_ServiceMetrics_Good(string counterName, string expectedName)
+        {
+            var counters = new List<Counter>
+            {
+                new Counter(counterName , CounterType.Increment) { Count = 1, Time = DateTime.MinValue },
+                new Counter(counterName , CounterType.Interval) { Count = 11, Max = 13, Min = 3, Average = 3.5, Time = DateTime.MinValue },
+                new Counter(counterName , CounterType.LastValue) { Last = 2, Time = DateTime.MinValue },
+                new Counter(counterName , CounterType.Statistics) { Count = 111, Max = 113, Min = 13, Average = 13.5, Time = DateTime.MinValue }
+            };
+
+            var body = PrometheusCounterConverter.ToString(counters, "MyApp", "MyInstance");
+
+            var expected = $"# TYPE {expectedName} gauge\n{expectedName}{{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\"}} 1\n"
+                + $"# TYPE {expectedName}_max gauge\n{expectedName}_max{{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\"}} 13\n"
+                + $"# TYPE {expectedName}_min gauge\n{expectedName}_min{{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\"}} 3\n"
+                + $"# TYPE {expectedName}_average gauge\n{expectedName}_average{{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\"}} 3.5\n"
+                + $"# TYPE {expectedName}_count gauge\n{expectedName}_count{{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\"}} 11\n"
+                + $"# TYPE {expectedName} gauge\n{expectedName}{{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\"}} 2\n"
+                + $"# TYPE {expectedName}_max gauge\n{expectedName}_max{{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\"}} 113\n"
+                + $"# TYPE {expectedName}_min gauge\n{expectedName}_min{{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\"}} 13\n"
+                + $"# TYPE {expectedName}_average gauge\n{expectedName}_average{{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\"}} 13.5\n"
+                + $"# TYPE {expectedName}_count gauge\n{expectedName}_count{{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\"}} 111\n";
+
+            Assert.Equal(expected, body);
+        }
+
+        [Theory]
+        [InlineData("MyTarget1.MyService1.MyCommand1.call_count", "call_count")]
+        [InlineData("MyTarget1.MyService1.MyCommand1.call_time", "call_time")]
+        [InlineData("MyTarget1.MyService1.MyCommand1.call_errors", "call_errors")]
+        public void KnownCounter_Exec_ClientMetrics_Good(string counterName, string expectedName)
+        {
+            var counters = new List<Counter>
+            {
+                new Counter(counterName , CounterType.Increment) { Count = 1, Time = DateTime.MinValue },
+                new Counter(counterName , CounterType.Interval) { Count = 11, Max = 13, Min = 3, Average = 3.5, Time = DateTime.MinValue },
+                new Counter(counterName , CounterType.LastValue) { Last = 2, Time = DateTime.MinValue },
+                new Counter(counterName , CounterType.Statistics) { Count = 111, Max = 113, Min = 13, Average = 13.5, Time = DateTime.MinValue }
+            };
+
+            var body = PrometheusCounterConverter.ToString(counters, "MyApp", "MyInstance");
+
+            var expected = $"# TYPE {expectedName} gauge\n{expectedName}{{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\",target=\"MyTarget1\"}} 1\n"
+                + $"# TYPE {expectedName}_max gauge\n{expectedName}_max{{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\",target=\"MyTarget1\"}} 13\n"
+                + $"# TYPE {expectedName}_min gauge\n{expectedName}_min{{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\",target=\"MyTarget1\"}} 3\n"
+                + $"# TYPE {expectedName}_average gauge\n{expectedName}_average{{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\",target=\"MyTarget1\"}} 3.5\n"
+                + $"# TYPE {expectedName}_count gauge\n{expectedName}_count{{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\",target=\"MyTarget1\"}} 11\n"
+                + $"# TYPE {expectedName} gauge\n{expectedName}{{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\",target=\"MyTarget1\"}} 2\n"
+                + $"# TYPE {expectedName}_max gauge\n{expectedName}_max{{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\",target=\"MyTarget1\"}} 113\n"
+                + $"# TYPE {expectedName}_min gauge\n{expectedName}_min{{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\",target=\"MyTarget1\"}} 13\n"
+                + $"# TYPE {expectedName}_average gauge\n{expectedName}_average{{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\",target=\"MyTarget1\"}} 13.5\n"
+                + $"# TYPE {expectedName}_count gauge\n{expectedName}_count{{source=\"MyApp\",instance=\"MyInstance\",service=\"MyService1\",command=\"MyCommand1\",target=\"MyTarget1\"}} 111\n";
+
+            Assert.Equal(expected, body);
+        }
+
+        [Theory]
+        [InlineData("queue.default.sent_messages", "queue_sent_messages")]
+        [InlineData("queue.default.received_messages", "queue_received_messages")]
+        [InlineData("queue.default.dead_messages", "queue_dead_messages")]
+        public void KnownCounter_Exec_QueueMetrics_Good(string counterName, string expectedName)
+        {
+            var counters = new List<Counter>
+            {
+                new Counter(counterName , CounterType.Increment) { Count = 1, Time = DateTime.MinValue },
+                new Counter(counterName , CounterType.Interval) { Count = 11, Max = 13, Min = 3, Average = 3.5, Time = DateTime.MinValue },
+                new Counter(counterName , CounterType.LastValue) { Last = 2, Time = DateTime.MinValue },
+                new Counter(counterName , CounterType.Statistics) { Count = 111, Max = 113, Min = 13, Average = 13.5, Time = DateTime.MinValue }
+            };
+
+            var body = PrometheusCounterConverter.ToString(counters, "MyApp", "MyInstance");
+
+            var expected = $"# TYPE {expectedName} gauge\n{expectedName}{{source=\"MyApp\",instance=\"MyInstance\",queue=\"default\"}} 1\n"
+                + $"# TYPE {expectedName}_max gauge\n{expectedName}_max{{source=\"MyApp\",instance=\"MyInstance\",queue=\"default\"}} 13\n"
+                + $"# TYPE {expectedName}_min gauge\n{expectedName}_min{{source=\"MyApp\",instance=\"MyInstance\",queue=\"default\"}} 3\n"
+                + $"# TYPE {expectedName}_average gauge\n{expectedName}_average{{source=\"MyApp\",instance=\"MyInstance\",queue=\"default\"}} 3.5\n"
+                + $"# TYPE {expectedName}_count gauge\n{expectedName}_count{{source=\"MyApp\",instance=\"MyInstance\",queue=\"default\"}} 11\n"
+                + $"# TYPE {expectedName} gauge\n{expectedName}{{source=\"MyApp\",instance=\"MyInstance\",queue=\"default\"}} 2\n"
+                + $"# TYPE {expectedName}_max gauge\n{expectedName}_max{{source=\"MyApp\",instance=\"MyInstance\",queue=\"default\"}} 113\n"
+                + $"# TYPE {expectedName}_min gauge\n{expectedName}_min{{source=\"MyApp\",instance=\"MyInstance\",queue=\"default\"}} 13\n"
+                + $"# TYPE {expectedName}_average gauge\n{expectedName}_average{{source=\"MyApp\",instance=\"MyInstance\",queue=\"default\"}} 13.5\n"
+                + $"# TYPE {expectedName}_count gauge\n{expectedName}_count{{source=\"MyApp\",instance=\"MyInstance\",queue=\"default\"}} 111\n";
+
+            Assert.Equal(expected, body);
+        }
+
         [Fact]
         public void EmptyCounters()
         {
