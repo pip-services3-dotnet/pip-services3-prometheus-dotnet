@@ -1,9 +1,10 @@
 # Prometheus components for Pip.Services in .NET Changelog
 
-## <a name="3.0.0"></a> 3.0.0 (2018-08-24)
+## <a name="3.0.0-3.0.3"></a> 3.0.0-3.0.3 (2020-01-13)
 
 ### Breaking Changes
 * Moved to a separate package
+* Added 'pip-services' descriptors
 
 ## <a name="1.1.0-1.1.32"></a> 1.1.0-1.1.32 (2018-07-23)
 
