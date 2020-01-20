@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using PipServices3.Commons.Config;
 using PipServices3.Commons.Refer;
+using PipServices3.Components.Count;
 using PipServices3.Components.Info;
 using PipServices3.Prometheus.Count;
 using Xunit;
@@ -60,6 +61,29 @@ namespace PipServices3.Prometheus.Services
             String status = await Invoke("/metrics");
             Assert.NotNull(status);
             Assert.True(status.Length > 0);
+        }
+
+        [Fact]
+        public async Task TestMetricsAndResetAsync()
+        {
+            _counters.IncrementOne("test.counter1");
+            _counters.Stats("test.counter2", 2);
+            _counters.Last("test.counter3", 3);
+            _counters.TimestampNow("test.counter4");
+
+            String status = await Invoke("/metricsandreset");
+            Assert.NotNull(status);
+            Assert.True(status.Length > 0);
+
+            var counter1 = _counters.Get("test.counter1", CounterType.Increment);
+            var counter2 = _counters.Get("test.counter2", CounterType.Statistics);
+            var counter3 = _counters.Get("test.counter3", CounterType.LastValue);
+            var counter4 = _counters.Get("test.counter4", CounterType.Timestamp);
+
+            Assert.Null(counter1.Count);
+            Assert.Null(counter2.Count);
+            Assert.Null(counter3.Last);
+            Assert.Null(counter4.Time);
         }
 
         private static async Task<string> Invoke(string route)

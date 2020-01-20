@@ -86,12 +86,25 @@ namespace PipServices3.Prometheus.Services
         public override void Register()
         {
             RegisterRoute("get", "metrics", Metrics);
+            RegisterRoute("get", "metricsandreset", MetricsAndReset);
         }
 
         private async Task Metrics(HttpRequest request, HttpResponse response, RouteData routeData)
         {
             var counters = _cachedCounters != null ? _cachedCounters.GetAll() : null;
             var body = PrometheusCounterConverter.ToString(counters, _source, _instance);
+
+            response.StatusCode = 200;
+            response.ContentType = "text/plain";
+            await response.WriteAsync(body);
+        }
+
+        private async Task MetricsAndReset(HttpRequest request, HttpResponse response, RouteData routeData)
+        {
+            var counters = _cachedCounters != null ? _cachedCounters.GetAll() : null;
+            var body = PrometheusCounterConverter.ToString(counters, _source, _instance);
+
+            _cachedCounters?.ClearAll();
 
             response.StatusCode = 200;
             response.ContentType = "text/plain";
