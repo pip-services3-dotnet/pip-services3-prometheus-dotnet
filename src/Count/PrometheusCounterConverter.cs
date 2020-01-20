@@ -33,11 +33,11 @@ namespace PipServices3.Prometheus.Count
 
                 switch (counter.Type)
                 {
-                    case CounterType.Increment:
+                    case CounterType.Increment:  // IncrementOne
                         builder.Append("# TYPE ").Append(counterName).Append(" gauge\n");
                         builder.Append(counterName).Append(labels).Append(" ").Append(StringConverter.ToString(counter.Count)).Append("\n");
                         break;
-                    case CounterType.Interval:
+                    case CounterType.Interval: // BeginTiming
                         builder.Append("# TYPE ").Append(counterName).Append("_max gauge\n");
                         builder.Append(counterName).Append("_max").Append(labels).Append(" ").Append(StringConverter.ToString(counter.Max))
                             .Append("\n");
@@ -96,11 +96,28 @@ namespace PipServices3.Prometheus.Count
 
             var nameParts = counter.Name.Split('.');
 
-            // If there are other predictable names from which we can parse labels, we can add them below
-            if (nameParts.Length >= 3 && nameParts[2] == "exec_time")
+            if ((nameParts.Length >= 3 && nameParts[2] == "exec_count")
+                || (nameParts.Length >= 3 && nameParts[2] == "exec_time")
+                || (nameParts.Length >= 3 && nameParts[2] == "exec_errors"))
             {
                 labels["service"] = nameParts[0];
                 labels["command"] = nameParts[1];
+            }
+
+            if ((nameParts.Length >= 4 && nameParts[3] == "call_count")
+                || (nameParts.Length >= 4 && nameParts[3] == "call_time")
+                || (nameParts.Length >= 4 && nameParts[3] == "call_errors"))
+            {
+                labels["service"] = nameParts[1];
+                labels["command"] = nameParts[2];
+                labels["target"] = nameParts[0];
+            }
+
+            if ((nameParts.Length >= 3 && nameParts[2] == "sent_messages")
+                || (nameParts.Length >= 3 && nameParts[2] == "received_messages")
+                || (nameParts.Length >= 3 && nameParts[2] == "dead_messages"))
+            {
+                labels["queue"] = nameParts[1];
             }
 
             if (!labels.Any()) return string.Empty;
@@ -122,7 +139,6 @@ namespace PipServices3.Prometheus.Count
         /// </summary>
         /// <param name="counter">The counter to evaluate</param>
         /// <returns>The name of the counter to publish</returns>
-        // TODO: split into two methods rather than use out param
         private static string ParseCounterName(Counter counter)
         {
             if (string.IsNullOrEmpty(counter.Name)) return string.Empty;
@@ -130,42 +146,27 @@ namespace PipServices3.Prometheus.Count
             var nameParts = counter.Name.Split('.');
 
             // If there are other predictable names from which we can parse labels, we can add them below
-            if (nameParts.Length >= 3 && nameParts[2] == "exec_time")
+            // Rest Service Labels
+            if (nameParts.Length >= 3 && nameParts[2] == "exec_count") return nameParts[2];
+            if (nameParts.Length >= 3 && nameParts[2] == "exec_time") return nameParts[2];
+            if (nameParts.Length >= 3 && nameParts[2] == "exec_errors") return nameParts[2];
+
+            // Rest & Direct Client Labels
+            if (nameParts.Length >= 4 && nameParts[3] == "call_count") return nameParts[3];
+            if (nameParts.Length >= 4 && nameParts[3] == "call_time") return nameParts[3];
+            if (nameParts.Length >= 4 && nameParts[3] == "call_errors") return nameParts[3];
+
+            // Queue Labels
+            if ((nameParts.Length >= 3 && nameParts[2] == "sent_messages")
+                || (nameParts.Length >= 3 && nameParts[2] == "received_messages")
+                || (nameParts.Length >= 3 && nameParts[2] == "dead_messages"))
             {
-                return nameParts[2];
+                var name = $"{nameParts[0]}.{nameParts[2]}";
+                return name.ToLowerInvariant().Replace(".", "_").Replace("/", "_");
             }
 
-            // TODO: are there other assumptions we can make?
-            // Or just return as a single, valid name
-            return counter.Name.ToLowerInvariant()
-                .Replace(".", "_").Replace("/", "_");
-        }
-
-        /// <summary>
-        /// Returns any potential labels
-        /// </summary>
-        /// <param name="counter">The counter to evaluate</param>
-        /// <param name="instance">Typically the machine this is running on</param>
-        /// <param name="source">Typically the application</param>
-        /// <returns>An IDictionary populated with any labels to use with the counter</returns>
-        // TODO: split into two methods rather than use out param
-        private static IDictionary<string, string> ParseCounterLabels(Counter counter, string source, string instance)
-        {
-            var labels = new Dictionary<string, string>();
-
-            if (!string.IsNullOrEmpty(source)) labels["source"] = source;
-            if (!string.IsNullOrEmpty(instance)) labels["instance"] = instance;
-
-            var nameParts = counter.Name.Split('.');
-
-            // If there are other predictable names from which we can parse labels, we can add them below
-            if (nameParts.Length >= 3 && nameParts[2] == "exec_time")
-            {
-                labels["service"] = nameParts[0];
-                labels["command"] = nameParts[1];
-            }
-
-            return labels;
+            // If the counter is not a known type, just return as a single, valid name
+            return counter.Name.ToLowerInvariant().Replace(".", "_").Replace("/", "_");
         }
     }
 }
