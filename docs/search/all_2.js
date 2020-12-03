@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['generatecounterlabel',['GenerateCounterLabel',['../class_pip_services_1_1_prometheus_1_1_count_1_1_prometheus_counter_converter.html#a66bfa9770cd847f06335b104e46468b0',1,'PipServices3::Prometheus::Count::PrometheusCounterConverter']]]
+  ['generatecounterlabel',['GenerateCounterLabel',['../class_pip_services3_1_1_prometheus_1_1_count_1_1_prometheus_counter_converter.html#a12bdfbd3e421106699802f9bf730c963',1,'PipServices3::Prometheus::Count::PrometheusCounterConverter']]]
 ];
