@@ -16,7 +16,7 @@ namespace PipServices3.Prometheus.Count
     /// <summary>
     /// Performance counters that send their metrics to Prometheus service.
     /// 
-    /// The component is normally used in passive mode conjunction with PrometheusMetricsService.
+    /// The component is normally used in passive mode conjunction with <a href="https://pip-services3-dotnet.github.io/pip-services3-prometheus-dotnet/class_pip_services_1_1_prometheus_1_1_services_1_1_prometheus_metrics_service.html">PrometheusMetricsService</a>.
     /// Alternatively when connection parameters are set it can push metrics to Prometheus PushGateway.
     /// 
     /// ### Configuration parameters ###
