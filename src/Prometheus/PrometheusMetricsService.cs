@@ -45,7 +45,7 @@ namespace PipServices3.Prometheus.Services
     /// Console.Out.WriteLine("The Prometheus metrics service is accessible at http://+:8080/metrics");
     /// </code>
     /// </example>
-    public class PrometheusMetricsService: RestService
+    public class PrometheusMetricsService : RestService
     {
         private CachedCounters _cachedCounters;
         private string _source;
@@ -56,8 +56,11 @@ namespace PipServices3.Prometheus.Services
         /// </summary>
         public PrometheusMetricsService()
         {
-            _dependencyResolver.Put("cached-counters", new Descriptor("pip-services3", "counters", "cached", "*", "1.0"));
-            _dependencyResolver.Put("prometheus-counters", new Descriptor("pip-services3", "counters", "prometheus", "*", "1.0"));
+            _dependencyResolver.Put("cached-counters-3", new Descriptor("pip-services3", "counters", "cached", "*", "1.0"));
+            _dependencyResolver.Put("prometheus-counters-3", new Descriptor("pip-services3", "counters", "prometheus", "*", "1.0"));
+
+            _dependencyResolver.Put("cached-counters", new Descriptor("pip-services", "counters", "cached", "*", "1.0"));
+            _dependencyResolver.Put("prometheus-counters", new Descriptor("pip-services", "counters", "prometheus", "*", "1.0"));
         }
 
         /// <summary>
@@ -68,16 +71,27 @@ namespace PipServices3.Prometheus.Services
         {
             base.SetReferences(references);
 
-            _cachedCounters = _dependencyResolver.GetOneOptional<PrometheusCounters>("prometheus-counters");
+            _cachedCounters = _dependencyResolver.GetOneOptional<PrometheusCounters>("prometheus-counters-3");
+
+            if (_cachedCounters == null)
+                _cachedCounters = _dependencyResolver.GetOneOptional<PrometheusCounters>("prometheus-counters");
+
+            if (_cachedCounters == null)
+                _cachedCounters = _dependencyResolver.GetOneOptional<CachedCounters>("cached-counters-3");
+
+            if (_cachedCounters == null)
+                _dependencyResolver.GetOneOptional<CachedCounters>("cached-counters");
+
             var contextInfo = references.GetOneOptional<ContextInfo>(
                 new Descriptor("pip-services3", "context-info", "default", "*", "1.0"));
+
+            if (contextInfo == null)
+                references.GetOneOptional<ContextInfo>(
+                    new Descriptor("pip-services", "context-info", "default", "*", "1.0"));
             if (contextInfo != null && string.IsNullOrEmpty(_source))
                 _source = contextInfo.Name;
             if (contextInfo != null && string.IsNullOrEmpty(_instance))
                 _instance = contextInfo.ContextId;
-
-            if (_cachedCounters == null)
-                _cachedCounters = _dependencyResolver.GetOneOptional<CachedCounters>("cached-counters");
         }
 
         /// <summary>
