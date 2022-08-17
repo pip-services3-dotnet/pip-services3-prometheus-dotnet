@@ -97,11 +97,30 @@ namespace PipServices3.Prometheus.Count
             var nameParts = counter.Name.Split('.');
 
             // If there are other predictable names from which we can parse labels, we can add them below
-            if (nameParts.Length >= 3 && nameParts[2] == "exec_time")
+            if ((nameParts.Length >= 3 && nameParts[2] == "exec_count") 
+                || (nameParts.Length >= 3 && nameParts[2] == "exec_time")
+                || (nameParts.Length >= 3 && nameParts[2] == "exec_errors"))
             {
                 labels["service"] = nameParts[0];
                 labels["command"] = nameParts[1];
             }
+
+            if ((nameParts.Length >= 4 && nameParts[3] == "call_count")
+            || (nameParts.Length >= 4 && nameParts[3] == "call_time")
+            || (nameParts.Length >= 4 && nameParts[3] == "call_errors"))
+            {
+                labels["service"] = nameParts[1];
+                labels["command"] = nameParts[2];
+                labels["target"] = nameParts[0];
+            }
+
+            if ((nameParts.Length >= 3 && nameParts[2] == "sent_messages")
+                || (nameParts.Length >= 3 && nameParts[2] == "received_messages")
+                || (nameParts.Length >= 3 && nameParts[2] == "dead_messages"))
+            {
+                labels["queue"] = nameParts[1];
+            }
+
 
             if (!labels.Any()) return string.Empty;
             var builder = new StringBuilder();
@@ -130,9 +149,23 @@ namespace PipServices3.Prometheus.Count
             var nameParts = counter.Name.Split('.');
 
             // If there are other predictable names from which we can parse labels, we can add them below
-            if (nameParts.Length >= 3 && nameParts[2] == "exec_time")
+            // Rest Service Labels
+            if (nameParts.Length >= 3 && nameParts[2] == "exec_time") { return nameParts[2]; }
+            if (nameParts.Length >= 3 && nameParts[2] == "exec_count") { return nameParts[2]; }
+            if (nameParts.Length >= 3 && nameParts[2] == "exec_errors") { return nameParts[2]; }
+
+            // Rest & Direct Client Labels
+            if (nameParts.Length >= 4 && nameParts[3] == "call_count") { return nameParts[3]; }
+            if (nameParts.Length >= 4 && nameParts[3] == "call_time") { return nameParts[3]; }
+            if (nameParts.Length >= 4 && nameParts[3] == "call_errors") { return nameParts[3]; }
+
+            // Queue Labels
+            if ((nameParts.Length >= 3 && nameParts[2] == "sent_messages")
+                || (nameParts.Length >= 3 && nameParts[2] == "received_messages")
+                || (nameParts.Length >= 3 && nameParts[2] == "dead_messages"))
             {
-                return nameParts[2];
+                var name = $"{ nameParts[0]}.{ nameParts[2]}";
+                return name.ToLower().Replace(".", "_").Replace("/", "_");
             }
 
             // TODO: are there other assumptions we can make?

@@ -6,7 +6,7 @@
     <RootNamespace>PipServices3.Prometheus</RootNamespace>
     <ApplicationIcon />
     <Win32Resource />
-    <Version>3.4.1</Version>
+    <Version>3.4.2</Version>
     <Authors>Sergey Seroukhov, Alex Mazur, Andrew Harrington, Danyil Tretiakov</Authors>
     <Copyright>Conceptual Vision Consulting LLC. 2017-2022</Copyright>
     <Description>Prometheus components for Pip.Services in .NET</Description>
