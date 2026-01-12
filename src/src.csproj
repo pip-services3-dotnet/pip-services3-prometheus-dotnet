@@ -6,7 +6,7 @@
     <RootNamespace>PipServices3.Prometheus</RootNamespace>
     <ApplicationIcon />
     <Win32Resource />
-    <Version>3.6.0</Version>
+    <Version>3.6.1</Version>
     <Authors>Sergey Seroukhov, Alex Mazur, Andrew Harrington, Danyil Tretiakov</Authors>
     <Copyright>Conceptual Vision Consulting LLC. 2017-2026</Copyright>
     <Description>Prometheus components for Pip.Services in .NET</Description>
@@ -31,6 +31,6 @@
   <ItemGroup>
     <PackageReference Include="PipServices3.Commons" Version="3.6.0" />
     <PackageReference Include="PipServices3.Components" Version="3.7.0" />
-    <PackageReference Include="PipServices3.Rpc" Version="3.8.1" />
+    <PackageReference Include="PipServices3.Rpc" Version="3.8.2" />
   </ItemGroup>
 </Project>
